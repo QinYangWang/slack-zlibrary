@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  zlib
+
+  Sample SAM Template for zlib
+Parameters:
+  SlackBotToken:
+    Type: String
+    Description: Slack Bot OAuth & Permissions Bot User OAuth Token.
+  SlackSigningSecret:
+    Type: String
+    Description: Slack Bot App Credentials Signing Secret.
+  BucketName:
+    Type: String
+    Description: File Storage Bucket Name.
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 600
+
+Resources:
+  RepositoryBucket:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Ref BucketName
+  ZlibBotFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: ZlibHelper
+      CodeUri: src/
+      Handler: app.lambda_handler
+      Runtime: python3.10
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          SLACK_BOT_TOKEN: !Ref SlackBotToken
+          SLACK_SIGNING_SECRET: !Ref SlackSigningSecret
+          BUCKET_NAME: !Ref BucketName
+      Events:
+        Verify:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /
+            Method: any
+        Find:
+          Type: Api
+          Properties:
+            Path: /find
+            Method: any
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref BucketName
+        - LambdaInvokePolicy:
+            FunctionName: ZlibHelper

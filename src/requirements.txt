@@ -1,0 +1,2 @@
+slack_bolt
+requests==2.28.2

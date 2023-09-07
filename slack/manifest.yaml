@@ -1,0 +1,32 @@
+display_information:
+  name: ZlibHelper
+  description: A zlibrary book search assistant.
+  background_color: "#2f3033"
+  long_description: A zlibrary book search assistant to which you can initiate a session to query and download books. It will provide you with a temporary s3 pre-signed link for you to download the book.
+features:
+  bot_user:
+    display_name: ZlibHelper
+    always_online: false
+  slash_commands:
+    - command: /find
+      url: https://xxxx.com/find # replace xxxx.com to your api url
+      description: Find Books!
+      usage_hint: 三体
+      should_escape: false
+oauth_config:
+  scopes:
+    bot:
+      - channels:join
+      - channels:manage
+      - chat:write
+      - chat:write.customize
+      - chat:write.public
+      - commands
+      - app_mentions:read
+settings:
+  interactivity:
+    is_enabled: true
+    request_url: https://xxxx.com # replace xxxx.com to your api url
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false
